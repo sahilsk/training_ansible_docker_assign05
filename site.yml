@@ -1,0 +1,15 @@
+---
+# file site.yml
+
+- hosts: webservers
+  roles:
+#  - common
+  - docker
+#  - nginx
+
+  pre_tasks:
+  - debug: msg="Starting  to install docker"
+
+
+  post_tasks:
+  - debug: msg="Dcoker finished"

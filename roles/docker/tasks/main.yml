@@ -1,0 +1,44 @@
+---
+# file  docker/tasks/main.yml
+
+- name: run apt-get update
+  apt: update_cache=yes
+  sudo: yes
+
+- name: install required packages
+  apt: name="linux-image-generic-lts-trusty" state="present"
+  sudo: yes
+
+- name: reboot system
+  command: reboot
+  sudo: yes
+
+
+- name: waiting for system to reboot
+  local_action:
+      module: wait_for
+        host={{ansible_ssh_host}}
+        port=22
+        delay=1
+        timeout=300
+
+- name: check wget
+  shell: which wget
+  register: wgetfound_result
+
+
+- name: install wget, if not
+  apt: name="wget" state="present"
+  when: wgetfound_result.rc != 0
+  sudo: yes
+
+- name: get latest docker packages 
+  shell: wget -qO- https://get.docker.com/ | sh
+  sudo: true
+
+- name: verify docker
+  command: docker run hello-world
+  sudo: yes
+  register: docker_result.stdout
+
+- debug: msg={{docker_result}}

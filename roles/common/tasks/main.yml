@@ -1,0 +1,6 @@
+---
+# file common/tasks/main.yml
+
+- name: run apt-get update
+  apt: update_cache=yes
+  sudo: yes
