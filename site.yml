@@ -4,8 +4,8 @@
 - hosts: webservers
   roles:
 #  - common
-  - docker
-#  - nginx
+#  - docker
+  - nginx
 
   pre_tasks:
   - debug: msg="Starting  to install docker"

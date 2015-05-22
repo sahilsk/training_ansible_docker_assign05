@@ -1,23 +1,34 @@
 ---
 # file roles/nginx/tasks/main.yml
 
-- name: add nginx repo
-  shell: echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/nginx-stable.list
+
+### What we will do?
+# create dockerfile : DONE
+# push it on node  :  DONE: PASS
+# build it & tag it on node : DONE
+# run the tagged image i.e container @  port 80
+
+
+### docker pull nginx
+### docker run -p 80:80 nginx
+
+
+- name: make sure dir exist
+  file: path="{{build_dir}}" state="directory"
+
+
+- name: push dockerfile on node
+  template: src="Dockerfile.j2" dest="{{build_dir}}/Dockerfile"
+
+- name: build dockerfile
+  shell: docker build -t {{ image_name}}  {{ build_dir }}
   sudo: yes
 
-#- name: add keyserver 
-#  shell: sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C300EE8C
-#  sudo: yes
 
-- name: add keyserver 
-  apt_key: keyserver=keyserver.ubuntu.com id=C300EE8C
-  sudo: yes
-
-- name: udpate apt  
-  apt: update_cache=yes
-  sudo: yes
-
-- name: install nginx
-  apt: name="nginx" state=present
-  sudo: yes
-
+- name: Run docker nginx image
+  docker:
+    name: sahilsk_nginx_cimg
+    image: "{{image_name}}"
+    state: started
+    ports:
+    - "{{nginx_port}}:80"

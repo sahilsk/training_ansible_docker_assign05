@@ -39,6 +39,6 @@
 - name: verify docker
   command: docker run hello-world
   sudo: yes
-  register: docker_result.stdout
+  register: docker_result
 
-- debug: msg={{docker_result}}
+- debug: msg={{docker_result.stdout}}

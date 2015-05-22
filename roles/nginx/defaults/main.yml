@@ -1,0 +1,7 @@
+---
+# file roles/defautls/main.yml
+
+nginx_port: 80
+nginx_ssl_port: 443
+build_dir: "/home/vagrant/nginx_build"
+image_name: "sahilsk/nginx_c"
